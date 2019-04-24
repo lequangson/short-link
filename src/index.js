@@ -5,6 +5,7 @@ import "antd/dist/antd.css";
 import { HashRouter } from 'react-router-dom';
 import { useStrict } from 'mobx';
 import { Provider } from 'mobx-react';
+import 'bootstrap/dist/css/bootstrap.css'
 
 import App from './components/App';
 
