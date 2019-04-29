@@ -64,20 +64,20 @@ const Auth = {
   save: user => requests.put('/user', { user }),
 }
 
-const shortLink = {
-  shortLink: () => requests.post('/short-link', { ...data }),
+const ShortLink = {
+  handleShortLink: (data) => requests.post('/short-link', data),
 }
 
-const edit = {
+const Edit = {
   editLink: () => requests.post('/edit-link'),
   editLinks: () => requests.post('/edit-links'),
 }
 
-const deleteLinks = {
+const DeleteLinks = {
   deleteLinks: () => requests.post('/delete-links'),
 }
 
-const getAllLinks = {
+const GetAllLinks = {
   getAllLinks: () => requests.get('/get-all-links'),
 }
 
@@ -125,9 +125,9 @@ export default {
   Auth,
   Comments,
   Profile,
-  shortLink,
-  edit,
-  deleteLinks,
-  getAllLinks,
+  ShortLink,
+  Edit,
+  DeleteLinks,
+  GetAllLinks,
   Tags,
 }

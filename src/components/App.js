@@ -2,6 +2,7 @@ import Header from './Header';
 import React from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
+import DevTools from 'mobx-react-devtools';
 import PrivateRoute from './PrivateRoute';
 
 import Article from './Article';
@@ -26,8 +27,9 @@ export default class App extends React.Component {
 
   componentDidMount() {
     if (this.props.commonStore.token) {
-      this.props.userStore.pullUser()
-        .finally(() => this.props.commonStore.setAppLoaded());
+      this.props.commonStore.setAppLoaded()
+      // this.props.userStore.pullUser()
+      //   .finally(() => this.props.commonStore.setAppLoaded());
     }
   }
 
@@ -47,6 +49,7 @@ export default class App extends React.Component {
             <Route path="short-links" component={ShortLinks} />
             <Route path="/" component={ShortLinks} />
           </Switch>
+          <DevTools />
         </div>
       );
     }
