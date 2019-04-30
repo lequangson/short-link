@@ -14,7 +14,7 @@ import Register from './Register';
 import Settings from './Settings';
 import ShortLinks from './shortLinks';
 
-@inject('userStore', 'commonStore')
+@inject('userStore', 'commonStore', 'shortLinks')
 @withRouter
 @observer
 export default class App extends React.Component {
@@ -27,9 +27,9 @@ export default class App extends React.Component {
 
   componentDidMount() {
     if (this.props.commonStore.token) {
-      this.props.commonStore.setAppLoaded()
-      // this.props.userStore.pullUser()
-      //   .finally(() => this.props.commonStore.setAppLoaded());
+      this.props.shortLinks.getAllLinks()
+      this.props.userStore.pullUser()
+        .finally(() => this.props.commonStore.setAppLoaded());
     }
   }
 
@@ -46,8 +46,8 @@ export default class App extends React.Component {
             <PrivateRoute path="/settings" component={Settings} />
             <Route path="/@:username" component={Profile} />
             <Route path="/@:username/favorites" component={Profile} /> */}
-            <Route path="short-links" component={ShortLinks} />
-            <Route path="/" component={ShortLinks} />
+            <PrivateRoute path="/short-links" component={ShortLinks} />
+            <PrivateRoute path="/" component={ShortLinks} />
           </Switch>
           <DevTools />
         </div>

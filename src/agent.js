@@ -2,16 +2,19 @@ import superagentPromise from 'superagent-promise'
 import _superagent from 'superagent'
 import commonStore from './stores/commonStore'
 import authStore from './stores/authStore'
+import { ROOT_URL } from './constant'
 
 const superagent = superagentPromise(_superagent, global.Promise)
 
-const API_ROOT = 'http://shortlink.com/api'
+const API_ROOT = `${ROOT_URL}api`
 
 const encode = encodeURIComponent
 
 const handleErrors = err => {
   if (err && err.response && err.response.status === 401) {
     authStore.logout()
+  } if (err && err.response && err.response.status === 500) {
+    alert('somthing went wrong! please refesh before try again')
   }
   return err
 }
@@ -20,9 +23,17 @@ const responseBody = res => res.body
 
 const tokenPlugin = req => {
   if (commonStore.token) {
-    req.set('authorization', `Token ${commonStore.token}`)
+    req.set('authorization', `Bearer ${commonStore.token}`)
+    req.set('accept', 'application/json')
+    req.set('X-Requested-With', XMLHttpRequest)
   }
 }
+
+// const tokenPlugin = req => {
+//   if (commonStore.token) {
+//     req.set('authorization', `Token ${commonStore.token}`)
+//   }
+// }
 
 const requests = {
   del: url =>
@@ -78,7 +89,7 @@ const DeleteLinks = {
 }
 
 const GetAllLinks = {
-  getAllLinks: () => requests.get('/get-all-links'),
+  getAllLinks: () => requests.get('/v1/get-all-links'),
 }
 
 const Tags = {

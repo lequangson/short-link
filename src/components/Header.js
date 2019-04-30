@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 const LoggedOutView = props => {
   if (!props.currentUser) {
     return (
-      <ul className="nav navbar-nav pull-xs-right">
+      <ul className="nav navbar pull-xs-right">
 
         <li className="nav-item">
           <Link to="/" className="nav-link">
@@ -34,7 +34,7 @@ const LoggedOutView = props => {
 const LoggedInView = props => {
   if (props.currentUser) {
     return (
-      <ul className="nav navbar-nav pull-xs-right">
+      <ul className="nav navbar pull-xs-right">
 
         <li className="nav-item">
           <Link to="/" className="nav-link">
@@ -42,7 +42,7 @@ const LoggedInView = props => {
           </Link>
         </li>
 
-        <li className="nav-item">
+        {/*<li className="nav-item">
           <Link to="/editor" className="nav-link">
             <i className="ion-compose" />&nbsp;New Post
           </Link>
@@ -52,15 +52,25 @@ const LoggedInView = props => {
           <Link to="/settings" className="nav-link">
             <i className="ion-gear-a" />&nbsp;Settings
           </Link>
+        </li>*/}
+
+        <li className="nav-item">
+          <Link
+            to={`/@${props.currentUser.name}`}
+            className="nav-link"
+          >
+            <img src={props.currentUser.image} className="user-pic" alt="" />
+            {props.currentUser.name}
+          </Link>
         </li>
 
         <li className="nav-item">
           <Link
-            to={`/@${props.currentUser.username}`}
+            to="/"
             className="nav-link"
+            onClick={props.logout}
           >
-            <img src={props.currentUser.image} className="user-pic" alt="" />
-            {props.currentUser.username}
+          logout
           </Link>
         </li>
 
@@ -71,7 +81,7 @@ const LoggedInView = props => {
   return null;
 };
 
-@inject('userStore', 'commonStore')
+@inject('userStore', 'commonStore' , 'authStore')
 @observer
 class Header extends React.Component {
   render() {
@@ -85,7 +95,7 @@ class Header extends React.Component {
 
           <LoggedOutView currentUser={this.props.userStore.currentUser} />
 
-          <LoggedInView currentUser={this.props.userStore.currentUser} />
+          <LoggedInView currentUser={this.props.userStore.currentUser} logout={this.props.authStore.logout} />
         </div>
       </nav>
     );

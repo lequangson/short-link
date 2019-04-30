@@ -1,30 +1,87 @@
 import React, { Component } from 'react'
-import { Switch, Route, withRouter } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { Row, Col, Input, Layout, Button } from 'antd'
+import { isEmpty } from 'lodash'
+import ListLinks from './ListLinks'
+
 const { TextArea } = Input
 const ButtonGroup = Button.Group
 
 
 
 @inject('userStore', 'shortLinks')
-@withRouter
 @observer
 export default class shortLink extends Component {
-  state = { isSingle: true, single: '', mutiple: '' }
+  state = { isSingle: true }
 
   toggleMethodShort = () => this.setState(pre => ({ isSingle: !pre.isSingle }))
 
-  handleChange = typeData => evt => this.setState({ [typeData]: evt.target.value})
+  handleChange = typeData => evt => {
+    const listLink = evt.target.value.trim().replace( /\n/g, " " ).split(' ')
+    const { setMain,setUrl } = this.props.shortLinks
+    const exSub = /(http(s)?:\/\/)|(\/.*){1}/g;
+    const subUrl = listLink[0].match(exSub)
+    const mainUrl = listLink[0].replace(exSub, '')
+    if (mainUrl) {
+      setMain(`http://${mainUrl}`)
+    }
+    if (typeData === 'single' && !isEmpty(subUrl)) {
+      setUrl([subUrl[1] || subUrl[0]])
+    } else {
+      const listSub = listLink.reduce((finalList, value) => {
+        const sub = value.match(exSub)
+        if (!isEmpty(sub)) {
+           finalList.push(sub[1] || sub[0])
+        }
+        return finalList
+      }, [])
+        console.log('msg', listSub)
+      setUrl(listSub)
+    }
+  }
+
+ copyToClipboard = str => () => {
+    const el = document.createElement('textarea');  // Create a <textarea> element
+    el.value = str;                                 // Set its value to the string that you want copied
+    el.setAttribute('readonly', '');                // Make it readonly to be tamper-proof
+    el.style.position = 'absolute';                 
+    el.style.left = '-9999px';                      // Move outside the screen to make it invisible
+    document.body.appendChild(el);                  // Append the <textarea> element to the HTML document
+    const selected =            
+      document.getSelection().rangeCount > 0        // Check if there is any content selected previously
+        ? document.getSelection().getRangeAt(0)     // Store selection if found
+        : false;                                    // Mark as false to know no selection existed before
+    el.select();                                    // Select the <textarea> content
+    document.execCommand('copy');                   // Copy - only works as a result of a user action (e.g. click events)
+    document.body.removeChild(el);                  // Remove the <textarea> element
+    if (selected) {                                 // If a selection existed before copying
+      document.getSelection().removeAllRanges();    // Unselect everything on the HTML document
+      document.getSelection().addRange(selected);   // Restore the original selection
+    }
+  }
 
   render() {
-    const { shortLink } = this.props.shortLinks
+    const { shortLink, mainUrl, listShort } = this.props.shortLinks
     const { isSingle } = this.state
     return (
-      <Layout className='px-4'>
-        <Row>
+      <Layout className='p-4'>
+        <Row  className='pb-4'>
           <Col className='gutter-row' span={17} align='middle'>
-          <Row>
+          <Row className="bg-white py-4 px-2">
+          {!isEmpty(listShort) && listShort.forEach(item => {
+              <Row>
+                <Col className='gutter-row' span={17} align='middle'>
+                  <p className="text-success">{item.singleLink}</p>
+                </Col>
+                 <Button
+                    type="ghost"
+                    className="text-success"
+                    onClick={this.copyToClipboard(item.singleLink)}>
+                    Copy
+                </Button>  
+               </Row> 
+             })
+           }
           <Col className='gutter-row' span={17} align='middle'>
             {isSingle ? (
               <Input
@@ -39,13 +96,17 @@ export default class shortLink extends Component {
               />
             )}
             </Col>
-            <Button
-                type="primary"
-                onClick={shortLink}>
-                Short
-            </Button>
+              <Col className="d-flex justify-content-end" span={7}>
+                <Button
+                    type="primary"
+                    disabled={!mainUrl}
+                    onClick={shortLink}>
+                    Short
+                </Button>
+              </Col>
             </Row>
-            <ButtonGroup className='d-flex justify-content-end mt-4'>
+
+            <ButtonGroup className='d-flex justify-content-end my-4'>
               <Button
                 type={isSingle ? 'primary' : ''}
                 onClick={this.toggleMethodShort}>
@@ -57,9 +118,12 @@ export default class shortLink extends Component {
                 Mutiple
               </Button>
             </ButtonGroup>
+
+            <ListLinks />
           </Col>
           <Col className='gutter-row' span={7} />
         </Row>
+
       </Layout>
     )
   }

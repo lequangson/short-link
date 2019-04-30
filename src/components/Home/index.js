@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom';
 @observer
 export default class Home extends React.Component {
   componentDidMount() {
-    this.props.commonStore.loadTags();
+    // this.props.commonStore.loadTags();
   }
 
   render() {
@@ -22,17 +22,17 @@ export default class Home extends React.Component {
 
         <div className="container page">
           <div className="row">
-            <MainView />
-
+            {/*<MainView />
+*/}
             <div className="col-md-3">
               <div className="sidebar">
 
-                <p>Popular Tags</p>
-
+                <p>Wellcome to shortlink page. You need to login before do something</p>
+{/*
                 <Tags
                   tags={tags}
                 />
-
+*/}
               </div>
             </div>
           </div>

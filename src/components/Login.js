@@ -17,7 +17,7 @@ export default class Login extends React.Component {
   handleSubmitForm = (e) => {
     e.preventDefault();
     this.props.authStore.login()
-      .then(() => this.props.history.replace('/'));
+      .then(() => this.props.history.replace('/short-links'));
   };
 
   render() {
