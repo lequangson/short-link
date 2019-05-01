@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Row, Col, List, Avatar, Button, Skeleton, } from 'antd'
 import { isEqual, range } from 'lodash'
+import { inject, observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { ROOT_URL } from 'constant'
 
 
 const count = 5;
-
+@inject('shortLinks')
+@observer
 class ListShow extends Component {
 	 state = {
     initLoading: true,
@@ -26,7 +29,7 @@ class ListShow extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-  	if(!isEqual(this.props.data, nextProps.data)) {
+  	if(!isEqual(toJS(this.props.data), toJS(nextProps.data))) {
   		const newData = this.handleData(nextProps.data)
 	    this.setState({
 	      data: newData,
@@ -68,6 +71,7 @@ class ListShow extends Component {
 
   render() {
   	const { initLoading, loading, list, curentIndex, data } = this.state;
+  	const { deleteLinks } = this.props.shortLinks
     const loadMore = (curentIndex + 1 < data.length) && !initLoading && !loading ? (
       <div style={{
         textAlign: 'center', marginTop: 12, height: 32, lineHeight: '32px',
@@ -87,7 +91,12 @@ class ListShow extends Component {
 		        loadMore={loadMore}
 		        dataSource={list}
 		        renderItem={item => (
-		          <List.Item actions={[<a>edit</a>, <a>more</a>]}>
+		          <List.Item 
+		          	actions={[
+		          		<a>edit</a>, 
+		          		<span className="text-danger" onClick={deleteLinks([item.code])}>delete</span>
+		          	]}
+		          >
 		            <Skeleton avatar title={false} loading={item.loading} active>
 		              <List.Item.Meta
 		                avatar={<Avatar src="http://sunsports.store/wp-content/uploads/2019/04/imgpsh_fullsize_anim-1.png" />}

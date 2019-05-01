@@ -80,12 +80,12 @@ const ShortLink = {
 }
 
 const Edit = {
-  editLink: () => requests.post('/edit-link'),
-  editLinks: () => requests.post('/edit-links'),
+  editLink: (data) => requests.post('/edit-link', data),
+  editLinks: (data) => requests.post('/edit-links', data),
 }
 
 const DeleteLinks = {
-  deleteLinks: () => requests.post('/delete-links'),
+  deleteLinks: (data) => requests.post('/delete-links', data),
 }
 
 const GetAllLinks = {

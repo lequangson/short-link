@@ -18,22 +18,30 @@ class ShortLinks {
     this.subUrl = subUrl;
   }
 
+  @action getAllLinks = () => {
+    this.loading = true;
+    return agent.GetAllLinks.getAllLinks()
+      .then(action(({ data }) => { this.allLinks = data }))
+      .finally(action(() => { this.loading = false; }))
+  }
+
   @action shortLink = () => {
     this.loading = true;
     const listForSent = this.subUrl.reduce((listFinal, item) => {
       listFinal.push({main_url: this.mainUrl, sub_url: item})
       return listFinal
     }, [])
-    return agent.ShortLink.handleShortLink(listForSent)
+    return agent.ShortLink.handleShortLink({ links: listForSent })
       .then(action(({ data }) => { this.listShort = data.map(item => `${ROOT_URL}${data.item}`) }))
+      .then(() => this.getAllLinks())
       .finally(action(() => { this.loading = false; }))
   }
 
 
-  @action getAllLinks = () => {
+  @action deleteLinks = (data) => () => {
     this.loading = true;
-    return agent.GetAllLinks.getAllLinks()
-      .then(action(({ data }) => { this.allLinks = data }))
+    return agent.DeleteLinks.deleteLinks({codes: data})
+      .then(() => this.getAllLinks())
       .finally(action(() => { this.loading = false; }))
   }
 
