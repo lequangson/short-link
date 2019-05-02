@@ -13,7 +13,8 @@ const encode = encodeURIComponent
 const handleErrors = err => {
   if (err && err.response && err.response.status === 401) {
     authStore.logout()
-  } if (err && err.response && err.response.status === 500) {
+  }
+  if (err && err.response && err.response.status === 500) {
     alert('somthing went wrong! please refesh before try again')
   }
   return err
@@ -76,16 +77,16 @@ const Auth = {
 }
 
 const ShortLink = {
-  handleShortLink: (data) => requests.post('/short-link', data),
+  handleShortLink: data => requests.post('/short-link', data),
 }
 
 const Edit = {
-  editLink: (data) => requests.post('/edit-link', data),
-  editLinks: (data) => requests.post('/edit-links', data),
+  editLink: data => requests.post('/edit-link', data),
+  editLinks: data => requests.post('/edit-links', data),
 }
 
 const DeleteLinks = {
-  deleteLinks: (data) => requests.post('/delete-links', data),
+  deleteLinks: data => requests.post('/delete-links', data),
 }
 
 const GetAllLinks = {

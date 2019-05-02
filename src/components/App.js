@@ -1,35 +1,34 @@
-import Header from './Header';
-import React from 'react';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import { inject, observer } from 'mobx-react';
-import DevTools from 'mobx-react-devtools';
-import PrivateRoute from './PrivateRoute';
+import Header from './Header'
+import React from 'react'
+import { Switch, Route, withRouter } from 'react-router-dom'
+import { inject, observer } from 'mobx-react'
+import PrivateRoute from './PrivateRoute'
 
-import Article from './Article';
-import Editor from './Editor';
-import Home from './Home';
-import Login from './Login';
-import Profile from './Profile';
-import Register from './Register';
-import Settings from './Settings';
-import ShortLinks from './shortLinks';
+import Article from './Article'
+import Editor from './Editor'
+import Home from './Home'
+import Login from './Login'
+import Profile from './Profile'
+import Register from './Register'
+import Settings from './Settings'
+import ShortLinks from './shortLinks'
 
 @inject('userStore', 'commonStore', 'shortLinks')
 @withRouter
 @observer
 export default class App extends React.Component {
-
   componentWillMount() {
     if (!this.props.commonStore.token) {
-      this.props.commonStore.setAppLoaded();
+      this.props.commonStore.setAppLoaded()
     }
   }
 
   componentDidMount() {
     if (this.props.commonStore.token) {
       this.props.shortLinks.getAllLinks()
-      this.props.userStore.pullUser()
-        .finally(() => this.props.commonStore.setAppLoaded());
+      this.props.userStore
+        .pullUser()
+        .finally(() => this.props.commonStore.setAppLoaded())
     }
   }
 
@@ -39,22 +38,19 @@ export default class App extends React.Component {
         <div>
           <Header />
           <Switch>
-            <Route path="/login" component={Login} />
-            <Route path="/register" component={Register} />
+            <Route path='/login' component={Login} />
+            <Route path='/register' component={Register} />
             {/* <Route path="/editor/:slug?" component={Editor} />
             <Route path="/article/:id" component={Article} />
             <PrivateRoute path="/settings" component={Settings} />
             <Route path="/@:username" component={Profile} />
             <Route path="/@:username/favorites" component={Profile} /> */}
-            <PrivateRoute path="/short-links" component={ShortLinks} />
-            <PrivateRoute path="/" component={ShortLinks} />
+            <PrivateRoute path='/short-links' component={ShortLinks} />
+            <PrivateRoute path='/' component={ShortLinks} />
           </Switch>
-          <DevTools />
         </div>
-      );
+      )
     }
-    return (
-      <Header />
-    );
+    return <Header />
   }
 }
