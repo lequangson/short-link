@@ -1,1 +1,1 @@
-export const ROOT_URL = 'http://shortlink.com/'
+export const ROOT_URL = 'http://s92.best/'

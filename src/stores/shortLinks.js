@@ -46,7 +46,7 @@ class ShortLinks {
     return agent.ShortLink.handleShortLink({ links: listForSent })
       .then(
         action(({ data }) => {
-          this.listShort = data.map(item => `${ROOT_URL}${item.code}`)
+          this.listShort = data.map(item => `${ROOT_URL}${item.code} ${item.full_url}`)
         }),
       )
       .then(() => this.getAllLinks())
