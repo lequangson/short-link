@@ -46,12 +46,12 @@ class ListLinks extends Component {
 
   handleDataForLists = allLinks => {
     const data = {}
-    data.newest = allLinks.slice().sort(function compare(a, b) {
+    data.oldest = allLinks.slice().sort(function compare(a, b) {
       var dateA = new Date(a.date)
       var dateB = new Date(b.date)
       return dateA - dateB
     })
-    data.oldest = data.newest.slice().reverse()
+    data.newest = data.oldest.slice().reverse()
     data.popular = allLinks.slice().sort(function(a, b) {
       return b.num_click - a.num_click
     })

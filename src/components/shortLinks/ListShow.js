@@ -41,7 +41,8 @@ class ListShow extends Component {
       const newData = this.handleData(nextProps.data)
       this.setState({
         data: newData,
-        list: newData[this.state.curentIndex],
+        list: newData[0],
+        curentIndex: 0,
       })
     }
   }
