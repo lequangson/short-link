@@ -2,7 +2,7 @@
   "name": "react-mobx-realworld-example-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://react-mobx.realworld.io",
+  "homepage": "http://lequangson.github.io/short-link/",
   "license": "MIT",
   "devDependencies": {
     "gh-pages": "^1.0.0"

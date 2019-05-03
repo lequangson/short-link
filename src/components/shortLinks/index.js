@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Row, Col, Input, Layout, Button } from 'antd'
 import { isEmpty } from 'lodash'
-import { toJS } from 'mobx'
 import ListLinks from './ListLinks'
 
 const { TextArea } = Input
@@ -65,66 +64,87 @@ export default class shortLink extends Component {
   render() {
     const { shortLink, mainUrl, listShort, info } = this.props.shortLinks
     const { isSingle } = this.state
+    const regLink = /^\S*/
     return (
-      <Layout className='p-4'>
-        <Row className='pb-4' gutter={16}>
-          <Col className='gutter-row' span={17} align='middle'>
-            <Row className='bg-white py-4 px-2'>
+      <Layout className="p-4">
+        <Row className="pb-4" gutter={16}>
+          <Col className="gutter-row" span={17} align="middle">
+            <Row className="bg-white py-4 px-2">
               {listShort.map(item => {
                 return (
-                  <Row key={item} className="my-3">
-                    <Col className='gutter-row' span={17} align='middle'>
-                      <a className='text-success' target='_blank' href={item}>
-                        {item}
+                  <Row key={item.match(regLink)} className="my-3">
+                    <Col className="gutter-row" span={17} align="middle">
+                      <a
+                        className="text-success"
+                        target="_blank"
+                        href={item.match(regLink)}
+                      >
+                        {item.match(regLink)}
                       </a>
                     </Col>
                     <Button
-                      type='ghost'
-                      className='text-success'
-                      onClick={this.copyToClipboard(item)}>
+                      type="ghost"
+                      className="text-success"
+                      onClick={this.copyToClipboard(item)}
+                    >
                       Copy
                     </Button>
                   </Row>
                 )
               })}
-              <Col className='gutter-row' span={17} align='middle'>
+              {!isEmpty(listShort) && <Col
+                className="gutter-row mb-4 d-flex justify-content-end"
+                span={24}
+                align="middle"
+              >
+                <Button
+                  type="ghost"
+                  className="text-success"
+                  onClick={this.copyToClipboard(listShort.join('\n'))}
+                >
+                  Copy All
+                </Button>
+              </Col>}
+              <Col className="gutter-row" span={17} align="middle">
                 {isSingle ? (
                   <Input
-                    placeholder='Paste a long url'
+                    placeholder="Paste a long url"
                     onChange={this.handleChange('single')}
                   />
                 ) : (
                   <TextArea
-                    placeholder='Autosize height with minimum and maximum number of lines'
+                    placeholder="Autosize height with minimum and maximum number of lines"
                     autosize={{ minRows: 2, maxRows: 6 }}
                     onChange={this.handleChange('mutiple')}
                   />
                 )}
               </Col>
-              <Col className='d-flex justify-content-end' span={7}>
-                <Button type='primary' disabled={!mainUrl} onClick={shortLink}>
+              <Col className="d-flex justify-content-end" span={7}>
+                <Button type="primary" disabled={!mainUrl} onClick={shortLink}>
                   Short
                 </Button>
               </Col>
             </Row>
 
-            <ButtonGroup className='d-flex justify-content-end my-4'>
+            <ButtonGroup className="d-flex justify-content-end my-4">
               <Button
                 type={isSingle ? 'primary' : ''}
-                onClick={this.toggleMethodShort}>
+                onClick={this.toggleMethodShort}
+              >
                 Single
               </Button>
               <Button
                 type={!isSingle ? 'primary' : ''}
-                onClick={this.toggleMethodShort}>
+                onClick={this.toggleMethodShort}
+              >
                 Mutiple
               </Button>
             </ButtonGroup>
 
             <ListLinks />
           </Col>
-          <Col className='gutter-row' span={7}>
-            <Row  className='bg-white p-4'>
+          <Col className="gutter-row" span={7}>
+            <Row className="bg-white p-4">
               <h4 className="mb-4">Info</h4>
               <p>tổng links: {info.urls}</p>
               <p>tổng click: {info.clicks}</p>
