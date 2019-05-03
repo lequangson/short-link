@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Row, Col, Input, Button, Select } from 'antd'
+import { Row, Col, Input, Select } from 'antd'
 import { isEmpty, isEqual } from 'lodash'
 import ListShow from './ListShow'
 import { toJS } from 'mobx'
@@ -102,7 +102,7 @@ class ListLinks extends Component {
             </Select>
           </Col>
         </Row>
-
+         <hr />       
         <ListShow data={currentList} />
       </div>
     )

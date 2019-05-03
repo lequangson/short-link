@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Row, Col, Input, Layout, Button } from 'antd'
 import { isEmpty } from 'lodash'
+import { toJS } from 'mobx'
 import ListLinks from './ListLinks'
 
 const { TextArea } = Input
@@ -36,7 +37,6 @@ export default class shortLink extends Component {
         }
         return finalList
       }, [])
-      console.log('msg', listSub)
       setUrl(listSub)
     }
   }
@@ -63,27 +63,30 @@ export default class shortLink extends Component {
   }
 
   render() {
-    const { shortLink, mainUrl, listShort } = this.props.shortLinks
+    const { shortLink, mainUrl, listShort, info } = this.props.shortLinks
     const { isSingle } = this.state
     return (
       <Layout className='p-4'>
-        <Row className='pb-4'>
+        <Row className='pb-4' gutter={16}>
           <Col className='gutter-row' span={17} align='middle'>
             <Row className='bg-white py-4 px-2'>
-              {!isEmpty(listShort) &&
-                listShort.forEach(item => (
-                  <Row>
+              {listShort.map(item => {
+                return (
+                  <Row key={item} className="my-3">
                     <Col className='gutter-row' span={17} align='middle'>
-                      <p className='text-success'>{item.singleLink}</p>
+                      <a className='text-success' target='_blank' href={item}>
+                        {item}
+                      </a>
                     </Col>
                     <Button
                       type='ghost'
                       className='text-success'
-                      onClick={this.copyToClipboard(item.singleLink)}>
+                      onClick={this.copyToClipboard(item)}>
                       Copy
                     </Button>
                   </Row>
-                ))}
+                )
+              })}
               <Col className='gutter-row' span={17} align='middle'>
                 {isSingle ? (
                   <Input
@@ -120,7 +123,13 @@ export default class shortLink extends Component {
 
             <ListLinks />
           </Col>
-          <Col className='gutter-row' span={7} />
+          <Col className='gutter-row' span={7}>
+            <Row  className='bg-white p-4'>
+              <h4 className="mb-4">Info</h4>
+              <p>tổng links: {info.urls}</p>
+              <p>tổng click: {info.clicks}</p>
+            </Row>
+          </Col>
         </Row>
       </Layout>
     )

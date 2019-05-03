@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Row, Col, List, Avatar, Button, Skeleton, Modal, Checkbox } from 'antd'
+import { Row, Col, List, Button, Skeleton, Modal, Checkbox } from 'antd'
 import { isEqual } from 'lodash'
 import { inject, observer } from 'mobx-react'
 import { toJS } from 'mobx'
 import { ROOT_URL } from 'constant'
+import moment from 'moment'
+import FormEdit from './FormEdit'
 
 const count = 5
 @inject('shortLinks')
@@ -17,6 +19,11 @@ class ListShow extends Component {
     curentIndex: 0,
     listSelect: [],
     visible: false,
+    indeterminate: true,
+    checkAll: false,
+    currentIdEdit: '',
+    isModalDeleteAll: false,
+    isShowEditField: false,
   }
 
   componentDidMount() {
@@ -47,29 +54,39 @@ class ListShow extends Component {
     } else {
       newList.splice(listSelect.indexOf(id), 1)
     }
-    console.log('newList', newList)
     this.setState({
       listSelect: newList,
     })
   }
 
   showModal = id => () => {
+    if (id) {
+      return this.setState({
+        visible: true,
+        deleteId: id,
+      })
+    }
     this.setState({
       visible: true,
-      deleteId: id,
+      isModalDeleteAll: true,
     })
   }
 
   handleOk = () => {
-    this.props.shortLinks.deleteLinks([this.state.deleteId])
+    const { isModalDeleteAll, listSelect } = this.state
+    this.props.shortLinks.deleteLinks(
+      isModalDeleteAll ? listSelect : [this.state.deleteId],
+    )
     this.setState({
       visible: false,
+      isModalDeleteAll: false,
     })
   }
 
   handleCancel = () => {
     this.setState({
       visible: false,
+      isModalDeleteAll: false,
     })
   }
 
@@ -106,9 +123,40 @@ class ListShow extends Component {
     // });
   }
 
+  onCheckAllChange = e => {
+    const plainOptions = this.props.data.reduce((finallist, item) => {
+      finallist.push(item.code)
+      return finallist
+    }, [])
+    this.setState({
+      listSelect: e.target.checked ? plainOptions : [],
+      indeterminate: false,
+      checkAll: e.target.checked,
+      currentIdEdit: '',
+    })
+  }
+
+  setCCurrentIdEdit = id => () => {
+    this.setState({ currentIdEdit: id, isShowEditField: true })
+  }
+
+  showEditField = () =>
+    this.setState(pre => ({
+      isShowEditField: !pre.isShowEditField,
+      currentIdEdit: '',
+    }))
+
   render() {
-    const { initLoading, loading, list, curentIndex, data } = this.state
-    const { deleteLinks } = this.props.shortLinks
+    const {
+      initLoading,
+      loading,
+      list,
+      curentIndex,
+      data,
+      listSelect,
+      isShowEditField,
+      currentIdEdit,
+    } = this.state
     const loadMore =
       curentIndex + 1 < data.length && !initLoading && !loading ? (
         <div
@@ -124,6 +172,35 @@ class ListShow extends Component {
 
     return (
       <Row>
+        <Col span={24} className='mb-3 mt-3 d-flex justify-content-between'>
+          <Checkbox
+            indeterminate={this.state.indeterminate}
+            onChange={this.onCheckAllChange}
+            checked={this.state.checkAll}>
+            Check all
+          </Checkbox>
+          <div className='group'>
+            <Button
+              type='dashed'
+              className='mr-4'
+              onClick={this.showEditField}
+              disabled={!listSelect.length}>
+              sửa hết!
+            </Button>
+            <Button
+              type='danger'
+              onClick={this.showModal()}
+              disabled={!listSelect.length}>
+              xoá hết!
+            </Button>
+          </div>
+        </Col>
+        {isShowEditField && (!!listSelect.length || currentIdEdit) && (
+          <FormEdit listSelect={listSelect} idEdit={currentIdEdit} />
+        )}
+        <Col span={24} className='mb-3'>
+          <hr />
+        </Col>
         <Col span={24}>
           <List
             className='demo-loadmore-list'
@@ -134,7 +211,11 @@ class ListShow extends Component {
             renderItem={item => (
               <List.Item
                 actions={[
-                  <a>edit</a>,
+                  <span
+                    className='text-primary'
+                    onClick={this.setCCurrentIdEdit(item.code)}>
+                    Edit
+                  </span>,
                   <span
                     className='text-danger'
                     onClick={this.showModal(item.code)}>
@@ -145,7 +226,10 @@ class ListShow extends Component {
                   <List.Item.Meta
                     avatar={
                       // <Avatar src='http://sunsports.store/wp-content/uploads/2019/04/imgpsh_fullsize_anim-1.png' />
-                      <Checkbox onChange={this.toggleItem(item.code)} />
+                      <Checkbox
+                        onChange={this.toggleItem(item.code)}
+                        checked={listSelect.includes(item.code)}
+                      />
                     }
                     title={
                       <a href={`${ROOT_URL}${item.code}`} target='_blank'>
@@ -162,7 +246,10 @@ class ListShow extends Component {
                       </a>
                     }
                   />
-                  <div className='text-success'>{item.num_click} click</div>
+                  <div className=''>
+                    <p className='text-success'>{item.num_click} click</p>
+                    <p className="text-muted">{moment(item.created_at, "YYYYMMDD").add(16, 'hours').fromNow()}</p>
+                  </div>
                 </Skeleton>
               </List.Item>
             )}

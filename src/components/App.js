@@ -4,13 +4,8 @@ import { Switch, Route, withRouter } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
 import PrivateRoute from './PrivateRoute'
 
-import Article from './Article'
-import Editor from './Editor'
-import Home from './Home'
 import Login from './Login'
-import Profile from './Profile'
 import Register from './Register'
-import Settings from './Settings'
 import ShortLinks from './shortLinks'
 
 @inject('userStore', 'commonStore', 'shortLinks')

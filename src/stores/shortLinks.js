@@ -5,8 +5,9 @@ import agent from '../agent'
 class ShortLinks {
   @observable mainUrl
   @observable subUrl
-  @observable listShort
+  @observable listShort = []
   @observable allLinks = []
+  @observable info = {}
   @observable loading = false
 
   @action setMain = mainUrl => {
@@ -23,6 +24,10 @@ class ShortLinks {
       .then(
         action(({ data }) => {
           this.allLinks = data
+          this.info = {
+            urls: data.length,
+            clicks: data.reduce((total, value) => total + value.num_click , 0)
+          }
         }),
       )
       .finally(
@@ -41,7 +46,7 @@ class ShortLinks {
     return agent.ShortLink.handleShortLink({ links: listForSent })
       .then(
         action(({ data }) => {
-          this.listShort = data.map(item => `${ROOT_URL}${data.item}`)
+          this.listShort = data.map(item => `${ROOT_URL}${item.code}`)
         }),
       )
       .then(() => this.getAllLinks())
@@ -55,6 +60,29 @@ class ShortLinks {
   @action deleteLinks = data => {
     this.loading = true
     return agent.DeleteLinks.deleteLinks({ codes: data })
+      .then(() => this.getAllLinks())
+      .finally(
+        action(() => {
+          this.loading = false
+        }),
+      )
+  }
+
+  @action deleteLinks = data => {
+    this.loading = true
+    return agent.DeleteLinks.deleteLinks({ codes: data })
+      .then(() => this.getAllLinks())
+      .finally(
+        action(() => {
+          this.loading = false
+        }),
+      )
+  }
+
+  @action edit = ({ data, type }) => {
+    this.loading = true
+    const apiType = type === 'single' ? 'editLink' : 'editLinks'
+    return agent.Edit[apiType](data)
       .then(() => this.getAllLinks())
       .finally(
         action(() => {
