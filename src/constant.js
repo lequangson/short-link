@@ -1,1 +1,1 @@
-export const ROOT_URL = 'http://s92.best/'
+export const ROOT_URL = process.env.REACT_APP_API_URL
