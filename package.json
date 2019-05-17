@@ -68,13 +68,13 @@
     "url-loader": "0.5.9",
     "webpack": "3.5.1",
     "webpack-dashboard": "^1.0.0-2",
-    "webpack-dev-server": "2.7.1",
+    "webpack-dev-server": ">=3.1.11",
     "webpack-manifest-plugin": "1.2.1",
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development REACT_APP_API_URL=http://159.65.7.84/  node scripts/start.js ",
-    "build": "cross-env NODE_ENV=production REACT_APP_API_URL=http://api.ttl19.icu/ node scripts/build.js ",
+    "build": "cross-env NODE_ENV=production REACT_APP_API_URL=https://api.ttl19.icu/ node scripts/build.js ",
     "test": "cross-env node scripts/test.js --env=jsdom",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
