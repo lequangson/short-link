@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import promiseFinally from 'promise.prototype.finally';
 import React from 'react';
 import "antd/dist/antd.css";
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { useStrict } from 'mobx';
 import { Provider } from 'mobx-react';
 import 'bootstrap/dist/css/bootstrap.css'
@@ -37,8 +37,8 @@ useStrict(true);
 
 ReactDOM.render((
   <Provider {...stores}>
-    <BrowserRouter>
+    <HashRouter>
       <App />
-    </BrowserRouter>
+    </HashRouter>
   </Provider>
 ), document.getElementById('root'));
