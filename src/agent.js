@@ -7,6 +7,7 @@ import { ROOT_URL } from './constant'
 const superagent = superagentPromise(_superagent, global.Promise)
 
 const API_ROOT = `${ROOT_URL}api`
+const API_FACEBOOK = `https://graph.facebook.com`
 
 const encode = encodeURIComponent
 
@@ -63,6 +64,33 @@ const requests = {
       .then(responseBody),
 }
 
+const requestsFacebook = {
+  del: url =>
+    superagent
+      .del(`${API_FACEBOOK}${url}`)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
+  get: url =>
+    superagent
+      .get(`${API_FACEBOOK}${url}`)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
+  put: (url, body) =>
+    superagent
+      .put(`${API_FACEBOOK}${url}`, body)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
+  post: (url, body) =>
+    superagent
+      .post(`${API_FACEBOOK}${url}`, body)
+      .use(tokenPlugin)
+      .end(handleErrors)
+      .then(responseBody),
+}
+
 const Auth = {
   current: () => requests.post('/details'),
   login: (email, password) => requests.post('/login', { email, password }),
@@ -78,6 +106,11 @@ const Auth = {
 
 const ShortLink = {
   handleShortLink: data => requests.post('/short-link', data),
+}
+
+const Facebook = {
+  getFacebook: url => requestsFacebook.get(url),
+  postFacebook: (url, data) => requestsFacebook.post(url, data),
 }
 
 const Edit = {
@@ -142,4 +175,5 @@ export default {
   DeleteLinks,
   GetAllLinks,
   Tags,
+  Facebook,
 }

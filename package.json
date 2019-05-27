@@ -73,7 +73,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development REACT_APP_API_URL=http://159.65.7.84/  node scripts/start.js ",
+    "start": "cross-env NODE_ENV=development REACT_APP_API_URL=https://api.ttl19.icu/  node scripts/start.js ",
     "build": "cross-env NODE_ENV=production REACT_APP_API_URL=https://api.ttl19.icu/ node scripts/build.js ",
     "test": "cross-env node scripts/test.js --env=jsdom",
     "predeploy": "npm run build",

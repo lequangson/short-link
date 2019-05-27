@@ -7,6 +7,7 @@ import PrivateRoute from './PrivateRoute'
 import Login from './Login'
 import Register from './Register'
 import ShortLinks from './shortLinks'
+import PostArticle from './postArticle'
 
 @inject('userStore', 'commonStore', 'shortLinks')
 @withRouter
@@ -35,6 +36,7 @@ export default class App extends React.Component {
           <Switch>
             <Route path='/login' component={Login} />
             <Route path='/register' component={Register} />
+            <Route path='/post-article' component={PostArticle} />
             {/* <Route path="/editor/:slug?" component={Editor} />
             <Route path="/article/:id" component={Article} />
             <PrivateRoute path="/settings" component={Settings} />
