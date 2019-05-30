@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Input, Button, Checkbox } from 'antd'
+import { Input, Button, Checkbox, Modal } from 'antd'
 import isEmpty from 'lodash/isEmpty'
 import { copyToClipboard, selectElementContents } from 'utilities'
 const { TextArea } = Input
 
-@inject('facebook')
+@inject('facebook', 'commonStore')
 @observer
 export default class postArticle extends Component {
-  state = { listId: [], isPublish: false }
+  state = { list: [], listId: [], isPublish: false, valuePosts: '' }
 
   // componentDidMount() {
   //   const url =
@@ -17,9 +17,16 @@ export default class postArticle extends Component {
   // }
 
   onCheckPublish = e =>
-    this.setState({
+    this.setState(prevState => ({
       isPublish: e.target.checked,
-    })
+      list: prevState.list.map(item => ({
+        ...item,
+        dataPost: {
+          ...item.dataPost,
+          published: e.target.checked,
+        },
+      })),
+    }))
 
   setUrl = data => this.setState({ list: data })
 
@@ -32,6 +39,8 @@ export default class postArticle extends Component {
     if (mainUrl) {
       this.setState({
         main: `http://${mainUrl}`,
+        valuePosts: evt.target.value,
+        listId: [],
       })
     }
     const listSub = listLink.reduce((finalList, value) => {
@@ -59,46 +68,111 @@ export default class postArticle extends Component {
   }
 
   postMuntiple = () => {
-    const { postArticle } = this.props.facebook
+    const { facebook, commonStore } = this.props
+    const { postArticle } = facebook
+    const { queueModal } = commonStore
     const { list } = this.state
+    const listErrors = []
+    this.setState({ isDisablePost: true })
     Promise.all(
-      list.map(item => postArticle(`/${item.pageid}/photos`, item.dataPost)),
+      list.map(item =>
+        postArticle(`/${item.pageid}/photos`, item.dataPost).catch(err => {
+          const url =
+            err.response &&
+            err.response.req &&
+            err.response.req._data &&
+            err.response.req._data.url
+          const message =
+            err.response &&
+            err.response.body &&
+            err.response.body &&
+            err.response.body.error &&
+            err.response.body.error.message
+          listErrors.push({ url, message })
+        }),
+      ),
     )
-      .then(data => this.setState({ listId: data }))
-      .catch(() => alert('hãy thử lại nhé'))
+      .then(data =>
+        this.setState(
+          {
+            listId: data,
+            isPublish: false,
+          },
+          this.handleCopy,
+        ),
+      )
+      .finally(() => {
+        if (!isEmpty(listErrors))
+          queueModal({
+            modalType: this.renderErrorModal,
+            modalProps: { listErrors },
+          })
+        this.setState({ isDisablePost: false, valuePosts: '' })
+      })
   }
 
   handleCopy = () => {
     const { list, listId } = this.state
-    selectElementContents( document.getElementById('tableId') )
+    selectElementContents(document.getElementById('tableId'))
     const listUrls = list.reduce((finalList, item, index) => {
-      finalList.push(`${item.dataPost.url}\t${listId[index].id}`)
+      finalList.push(
+        `${item.dataPost.url}\t${listId[index] && listId[index].id}`,
+      )
       return finalList
     }, [])
-    copyToClipboard(listUrls.join('\n'))
+    copyToClipboard(listUrls.join('\n'))()
+  }
+
+  renderErrorModal = ({ listErrors }) => {
+    const closeModal = this.props.commonStore.hideModal
+    return (
+      <Modal
+        title='Đã có lỗi xảy ra'
+        visible
+        centered
+        onOk={closeModal}
+        onCancel={closeModal}>
+        {listErrors.map((item, index) => (
+          <div key={index}>
+            <p>{item.url}</p>
+            <p>{item.message}</p>
+          </div>
+        ))}
+      </Modal>
+    )
   }
 
   render() {
-    const { main, list, listId, isPublish } = this.state
+    const {
+      main,
+      list,
+      listId,
+      isPublish,
+      isDisablePost,
+      valuePosts,
+    } = this.state
     return (
-      <div className="p-3">
+      <div className='p-3'>
         <p>this page only for post article on facebook</p>
         <TextArea
-          placeholder="Autosize height with minimum and maximum number of lines"
+          placeholder='Autosize height with minimum and maximum number of lines'
           autosize={{ minRows: 2, maxRows: 6 }}
           onChange={this.handleChange()}
-          className="mb-3"
+          className='mb-3'
+          value={valuePosts}
         />
-        <div className="d-flex justify-content-between mb-3">
-          <Button type="primary" disabled={!main} onClick={this.postMuntiple}>
+        <div className='d-flex justify-content-between mb-3'>
+          <Button
+            type='primary'
+            disabled={!main || isDisablePost}
+            onClick={this.postMuntiple}>
             post
           </Button>
           {!isEmpty(listId) && (
             <Button
-              type="danger"
+              type='danger'
               disabled={isEmpty(listId)}
-              onClick={this.handleCopy}
-            >
+              onClick={this.handleCopy}>
               copy all
             </Button>
           )}
@@ -107,22 +181,25 @@ export default class postArticle extends Component {
           </Checkbox>
         </div>
         {!isEmpty(listId) && (
-          <table className="table" ref={ref => this.tableRef = ref} id="tableId">
+          <table
+            className='table'
+            ref={ref => (this.tableRef = ref)}
+            id='tableId'>
             <thead>
               <tr>
-                <th scope="col">img</th>
-                <th scope="col">id</th>
+                <th scope='col'>img</th>
+                <th scope='col'>id</th>
               </tr>
             </thead>
             <tbody>
               {list.map((item, index) => (
                 <tr key={index}>
-                  <th scope="row">
-                    <a target="_blank" href={item.dataPost.url}>
+                  <th scope='row'>
+                    <a target='_blank' href={item.dataPost.url}>
                       {item.dataPost.url}
                     </a>
                   </th>
-                  <td>{listId[index].id}</td>
+                  <td>{listId[index] && listId[index].id}</td>
                 </tr>
               ))}
             </tbody>

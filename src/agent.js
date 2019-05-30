@@ -12,13 +12,15 @@ const API_FACEBOOK = `https://graph.facebook.com`
 const encode = encodeURIComponent
 
 const handleErrors = err => {
-  if (err && err.response && err.response.status === 401) {
+  const status = err && err.response && err.response.status
+  const error = err && err.response && err.response
+  if (status === 401) {
     authStore.logout()
   }
-  if (err && err.response && err.response.status === 500) {
+  if (status === 500) {
     alert('somthing went wrong! please refesh before try again')
   }
-  return err
+  return error
 }
 
 const responseBody = res => res.body

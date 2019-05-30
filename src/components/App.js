@@ -8,6 +8,7 @@ import Login from './Login'
 import Register from './Register'
 import ShortLinks from './shortLinks'
 import PostArticle from './postArticle'
+import RootModal from 'components/modals'
 
 @inject('userStore', 'commonStore', 'shortLinks')
 @withRouter
@@ -45,6 +46,7 @@ export default class App extends React.Component {
             <PrivateRoute path='/short-links' component={ShortLinks} />
             <PrivateRoute path='/' component={ShortLinks} />
           </Switch>
+          <RootModal />
         </div>
       )
     }

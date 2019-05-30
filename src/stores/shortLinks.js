@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx'
+import { copyToClipboard } from 'utilities'
 import { ROOT_URL } from '../constant'
 import agent from '../agent'
 // window.location.origin
@@ -26,7 +27,7 @@ class ShortLinks {
           this.allLinks = data
           this.info = {
             urls: data.length,
-            clicks: data.reduce((total, value) => total + value.num_click , 0)
+            clicks: data.reduce((total, value) => total + value.num_click, 0),
           }
         }),
       )
@@ -46,10 +47,15 @@ class ShortLinks {
     return agent.ShortLink.handleShortLink({ links: listForSent })
       .then(
         action(({ data }) => {
-          this.listShort = data.map(item => `${ROOT_URL}${item.code}\t${item.full_url}`)
+          this.listShort = data.map(
+            item => `${ROOT_URL}${item.code}\t${item.full_url}`,
+          )
         }),
       )
-      .then(() => this.getAllLinks())
+      .then(() => {
+        copyToClipboard(this.listShort.join('\n'))()
+        this.getAllLinks()
+      })
       .finally(
         action(() => {
           this.loading = false
