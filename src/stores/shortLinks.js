@@ -1,5 +1,6 @@
 import { observable, action } from 'mobx'
 import { copyToClipboard } from 'utilities'
+import { message } from 'antd'
 import { ROOT_URL } from '../constant'
 import agent from '../agent'
 // window.location.origin
@@ -89,7 +90,11 @@ class ShortLinks {
     this.loading = true
     const apiType = type === 'single' ? 'editLink' : 'editLinks'
     return agent.Edit[apiType](data)
-      .then(() => this.getAllLinks())
+      .then(() => {
+        this.getAllLinks()
+        message.info('edit thành công')
+      })
+      .catch(() => message.info('edit thất bại'))
       .finally(
         action(() => {
           this.loading = false

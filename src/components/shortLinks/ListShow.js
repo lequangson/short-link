@@ -7,8 +7,8 @@ import { ROOT_URL } from 'constant'
 import moment from 'moment'
 import FormEdit from './FormEdit'
 
-const count = 5
-@inject('shortLinks')
+const count = 40
+@inject('shortLinks', 'commonStore')
 @observer
 class ListShow extends Component {
   state = {
@@ -197,7 +197,12 @@ class ListShow extends Component {
           </div>
         </Col>
         {isShowEditField && (!!listSelect.length || currentIdEdit) && (
-          <FormEdit listSelect={listSelect} idEdit={currentIdEdit} />
+          <FormEdit
+            listSelect={listSelect}
+            idEdit={currentIdEdit}
+            shortLinks={this.props.shortLinks}
+            commonStore={this.props.commonStore}
+          />
         )}
         <Col span={24} className='mb-3'>
           <hr />
@@ -211,6 +216,9 @@ class ListShow extends Component {
             dataSource={list}
             renderItem={item => (
               <List.Item
+                className={
+                  item.code === currentIdEdit ? 'border border-success' : ''
+                }
                 actions={[
                   <span
                     className='text-primary'
@@ -249,7 +257,11 @@ class ListShow extends Component {
                   />
                   <div className=''>
                     <p className='text-success'>{item.num_click} click</p>
-                    <p className="text-muted">{moment(item.created_at, "YYYYMMDD").add(16, 'hours').fromNow()}</p>
+                    <p className='text-muted'>
+                      {moment(item.created_at, 'YYYYMMDD')
+                        .add(16, 'hours')
+                        .fromNow()}
+                    </p>
                   </div>
                 </Skeleton>
               </List.Item>
