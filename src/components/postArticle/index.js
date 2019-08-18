@@ -68,14 +68,19 @@ export default class postArticle extends Component {
   }
 
   postMuntiple = () => {
+    const { list } = this.state
+    this.setState({ isDisablePost: true })
+    const cloneList = list.slice(0)
+    this.recursionlistCallApi(cloneList)
+  }
+
+  recursionlistCallApi = (cloneList, listErrors = []) => {
     const { facebook, commonStore } = this.props
     const { postArticle } = facebook
     const { queueModal } = commonStore
-    const { list } = this.state
-    const listErrors = []
-    this.setState({ isDisablePost: true })
+    const chunk = cloneList.splice(0, 10)
     Promise.all(
-      list.map(item =>
+      chunk.map(item =>
         postArticle(`/${item.pageid}/photos`, item.dataPost).catch(err => {
           const url =
             err.response &&
@@ -92,23 +97,27 @@ export default class postArticle extends Component {
         }),
       ),
     )
-      .then(data =>
-        this.setState(
-          {
-            listId: data,
-            isPublish: false,
-          },
-          this.handleCopy,
-        ),
+      .then(data => {
+        return this.setState(
+          prevState => {
+              return { listId: prevState.listId.concat(data) }
+            }
+          )
+        }
       )
       .finally(() => {
-        if (!isEmpty(listErrors))
+        if (!isEmpty(listErrors) && cloneList.length === 0) {
           queueModal({
             modalType: this.renderErrorModal,
             modalProps: { listErrors },
           })
-        this.setState({ isDisablePost: false, valuePosts: '' })
-      })
+        }
+        if (cloneList.length > 0) {
+          return setTimeout(() => {
+            this.recursionlistCallApi(cloneList, listErrors)
+          }, 1000);
+        } 
+        this.setState({ isDisablePost: false, valuePosts: '', isPublish: false })})
   }
 
   handleCopy = () => {
