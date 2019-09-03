@@ -85,17 +85,21 @@ const LoggedInView = props => {
 @observer
 class Header extends React.Component {
   render() {
+    const { commonStore, userStore, authStore } = this.props
     return (
       <nav className="navbar navbar-light">
         <div className="container">
 
           <Link to="/" className="navbar-brand">
-            {this.props.commonStore.appName.toLowerCase()}
+            {commonStore.appName.toLowerCase()}
           </Link>
 
-          <LoggedOutView currentUser={this.props.userStore.currentUser} />
+          <LoggedOutView currentUser={userStore.currentUser} />
 
-          <LoggedInView currentUser={this.props.userStore.currentUser} logout={this.props.authStore.logout} />
+          <LoggedInView 
+            currentUser={userStore.currentUser} 
+            logout={authStore.logout} 
+          />
         </div>
       </nav>
     );

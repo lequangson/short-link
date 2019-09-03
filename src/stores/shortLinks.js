@@ -1,8 +1,8 @@
-import { observable, action } from 'mobx'
-import { copyToClipboard } from 'utilities'
-import { message } from 'antd'
-import { ROOT_URL } from '../constant'
-import agent from '../agent'
+import { observable, action } from 'mobx';
+import { copyToClipboard } from 'utilities';
+import { message } from 'antd';
+import { ROOT_URL } from '../constant';
+import agent from '../agent';
 // window.location.origin
 class ShortLinks {
   @observable mainUrl
@@ -103,4 +103,4 @@ class ShortLinks {
   }
 }
 
-export default new ShortLinks()
+export default new ShortLinks();

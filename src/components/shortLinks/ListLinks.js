@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { inject, observer } from 'mobx-react'
-import { Row, Col, Input, Select } from 'antd'
-import { isEmpty, isEqual } from 'lodash'
-import ListShow from './ListShow'
-import { toJS } from 'mobx'
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { Row, Col, Input, Select } from 'antd';
+import { isEmpty, isEqual } from 'lodash';
+import ListShow from './ListShow';
+import { toJS } from 'mobx';
 
 const { Search } = Input
 const Option = Select.Option

@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { inject, observer } from 'mobx-react'
-import { Input, Button, Checkbox, Modal } from 'antd'
-import isEmpty from 'lodash/isEmpty'
-import { copyToClipboard, selectElementContents } from 'utilities'
-const { TextArea } = Input
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { Input, Button, Checkbox, Modal } from 'antd';
+import isEmpty from 'lodash/isEmpty';
+import { copyToClipboard, selectElementContents } from 'utilities';
+const { TextArea } = Input;
 
 @inject('facebook', 'commonStore')
 @observer

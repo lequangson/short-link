@@ -1,9 +1,8 @@
-import { observable, action } from 'mobx'
-import agent from '../agent'
-import userStore from './userStore'
-import commonStore from './commonStore'
+import { observable, action } from 'mobx';
+import agent from '../agent';
+import commonStore from './commonStore';
 
-class AuthStore {
+class FacebookStore {
   @observable inProgress = false
   @observable errors = undefined
 
@@ -43,4 +42,4 @@ class AuthStore {
   }
 }
 
-export default new AuthStore()
+export default new FacebookStore();

@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { inject, observer } from 'mobx-react'
-import { Row, Col, Input, Layout, Button } from 'antd'
-import { isEmpty } from 'lodash'
-import { copyToClipboard } from 'utilities'
-import ListLinks from './ListLinks'
+import React, { Component } from 'react';
+import { inject, observer } from 'mobx-react';
+import { Row, Col, Input, Layout, Button } from 'antd';
+import { isEmpty } from 'lodash';
+import { copyToClipboard } from 'utilities';
+import ListLinks from './ListLinks';
 
 const { TextArea } = Input
 const ButtonGroup = Button.Group

@@ -1,6 +1,6 @@
-import React, { useRef } from 'react'
-import { Form, Input, Button, Modal } from 'antd'
-import { inject, observer } from 'mobx-react'
+import React from 'react';
+import { Form, Input, Button, Modal } from 'antd';
+import { inject, observer } from 'mobx-react';
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field])
@@ -39,7 +39,7 @@ const handleSubmit = props => e => {
 function renderEditDetail({ hideModal, props }) {
   return (
     <Modal
-      title='Thay cả link'
+      title='change all link'
       visible
       centered
       onOk={handleSubmit(props)}

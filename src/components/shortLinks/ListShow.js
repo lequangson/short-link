@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import { Row, Col, List, Button, Skeleton, Modal, Checkbox } from 'antd'
-import { isEqual } from 'lodash'
-import { inject, observer } from 'mobx-react'
-import { toJS } from 'mobx'
-import { ROOT_URL } from 'constant'
-import moment from 'moment'
-import FormEdit from './FormEdit'
+import React, { Component } from 'react';
+import { Row, Col, List, Button, Skeleton, Modal, Checkbox } from 'antd';
+import { isEqual } from 'lodash';
+import { inject, observer } from 'mobx-react';
+import { toJS } from 'mobx';
+import { ROOT_URL } from 'constant';
+import moment from 'moment';
+import FormEdit from './FormEdit';
 
 const count = 40
 @inject('shortLinks', 'commonStore')

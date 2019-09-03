@@ -38,11 +38,6 @@ export default class App extends React.Component {
             <Route path='/login' component={Login} />
             <Route path='/register' component={Register} />
             <Route path='/post-article' component={PostArticle} />
-            {/* <Route path="/editor/:slug?" component={Editor} />
-            <Route path="/article/:id" component={Article} />
-            <PrivateRoute path="/settings" component={Settings} />
-            <Route path="/@:username" component={Profile} />
-            <Route path="/@:username/favorites" component={Profile} /> */}
             <PrivateRoute path='/short-links' component={ShortLinks} />
             <PrivateRoute path='/' component={ShortLinks} />
           </Switch>

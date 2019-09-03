@@ -9,21 +9,15 @@ import 'bootstrap/dist/css/bootstrap.css'
 
 import App from './components/App';
 
-import articlesStore from './stores/articlesStore';
-import commentsStore from './stores/commentsStore';
 import authStore from './stores/authStore';
 import commonStore from './stores/commonStore';
-import editorStore from './stores/editorStore';
 import userStore from './stores/userStore';
 import shortLinks from './stores/shortLinks';
 import facebook from './stores/facebook';
 
 const stores = {
-  articlesStore,
-  commentsStore,
   authStore,
   commonStore,
-  editorStore,
   userStore,
   facebook,
   shortLinks,
