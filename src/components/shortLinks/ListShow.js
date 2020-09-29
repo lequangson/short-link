@@ -57,6 +57,7 @@ class ListShow extends Component {
     }
     this.setState({
       listSelect: newList,
+      currentIdEdit: ''
     })
   }
 
@@ -138,7 +139,7 @@ class ListShow extends Component {
   }
 
   setCCurrentIdEdit = id => () => {
-    this.setState({ currentIdEdit: id, isShowEditField: true })
+    this.setState({ currentIdEdit: id, isShowEditField: true, listSelect: [] })
   }
 
   showEditField = () =>

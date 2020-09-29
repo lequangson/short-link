@@ -1,100 +1,111 @@
-import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
-import { Row, Col, Input, Select } from 'antd';
-import { isEmpty, isEqual } from 'lodash';
-import ListShow from './ListShow';
-import { toJS } from 'mobx';
+import React, { Component } from "react";
+import { inject, observer } from "mobx-react";
+import { Row, Col, Input, Select } from "antd";
+import { isEmpty, isEqual } from "lodash";
+import ListShow from "./ListShow";
+import { toJS } from "mobx";
 
-const { Search } = Input
-const Option = Select.Option
+const { Search } = Input;
+const Option = Select.Option;
 
 const selectOptions = [
-  { key: 'newest', label: 'newest' },
-  { key: 'oldest', label: 'oldest' },
-  { key: 'popular', label: 'popular' },
-]
-@inject(stores => ({
+  { key: "newest", label: "newest" },
+  { key: "oldest", label: "oldest" },
+  { key: "popular", label: "popular" },
+];
+@inject((stores) => ({
   allLinks: stores.shortLinks.allLinks,
 }))
 @observer
 class ListLinks extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       valueSelect: selectOptions[0],
-      valueSearch: '',
+      valueSearch: "",
       newest: [],
       oldest: [],
       popular: [],
       currentList: [],
-    }
+    };
   }
 
   componentDidMount() {
-    const allLinks = this.props.allLinks
+    const allLinks = this.props.allLinks;
     if (!isEmpty(toJS(allLinks))) {
-      this.handleDataForLists(allLinks)
+      this.handleDataForLists(allLinks);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const allLinks = this.props.allLinks
+    const allLinks = this.props.allLinks;
     if (!isEqual(toJS(nextProps.allLinks), toJS(allLinks))) {
-      this.handleDataForLists(nextProps.allLinks)
+      this.handleDataForLists(nextProps.allLinks);
     }
   }
 
-  handleDataForLists = allLinks => {
-    const data = {}
+  handleDataForLists = (allLinks) => {
+    const data = {};
     data.oldest = allLinks.slice().sort(function compare(a, b) {
-      var dateA = new Date(a.date)
-      var dateB = new Date(b.date)
-      return dateA - dateB
-    })
-    data.newest = data.oldest.slice().reverse()
-    data.popular = allLinks.slice().sort(function(a, b) {
-      return b.num_click - a.num_click
-    })
-    this.setState({ ...data, currentList: data[this.state.valueSelect.key] })
-  }
+      var dateA = new Date(a.date);
+      var dateB = new Date(b.date);
+      return dateA - dateB;
+    });
+    data.newest = data.oldest.slice().reverse();
+    data.popular = allLinks.slice().sort(function (a, b) {
+      return b.num_click - a.num_click;
+    });
+    this.setState({ ...data, currentList: data[this.state.valueSelect.key] });
+  };
 
-  handleChange = value => {
+  handleChange = (value) => {
     this.setState({
       valueSelect: value,
       currentList: this.state[value.key],
-    })
-  }
+    });
+  };
 
-  handleSearch = value => {
+  handleSearch = (value) => {
     const currentList = this.props.allLinks.filter(
-      item => `${item.main_url}${item.sub_url}`.includes(value),
-    )
+      (item) =>
+        `${item.main_url}${item.sub_url}`.includes(value) ||
+        value.includes(item.code) ||
+        value.includes(item.sub_url)
+        // value.includes(item.main_url.replace(/^https?:\/\//,''))
+    );
+    // const item = currentList[0]
+    // console.error('1', item)
+    // console.error('object', `${item.main_url}${item.sub_url}`.includes(value))
+    // console.error('object1', value.includes(item.code))
+    // console.error('object2', value.includes(item.sub_url))
+    // console.error('object3', value.includes(item.main_url.replace(/^https?:\/\//,'')))
     this.setState({
       valueSearch: value,
       currentList,
-    })
-  }
+    });
+  };
 
   render() {
-    const { valueSelect, currentList } = this.state
+    const { valueSelect, currentList } = this.state;
     return (
-      <div className='bg-white py-4 px-2'>
-        <Row className='d-flex justify-content-start align-items-center mb-5'>
+      <div className="bg-white py-4 px-2">
+        <Row className="d-flex justify-content-start align-items-center mb-5">
           <Col span={17}>
             <Search
-              placeholder='input search text'
-              enterButton='Search'
-              size='large'
+              placeholder="input search text"
+              enterButton="Search"
+              size="large"
               onSearch={this.handleSearch}
             />
           </Col>
-          <Col className='d-flex justify-content-end' span={7}>
+          <Col className="d-flex justify-content-end" span={7}>
             <Select
               labelInValue
               defaultValue={valueSelect}
               style={{ width: 80 }}
-              onChange={this.handleChange}>
-              {selectOptions.map(item => (
+              onChange={this.handleChange}
+            >
+              {selectOptions.map((item) => (
                 <Option key={item.key} value={item.key}>
                   {item.label}
                 </Option>
@@ -102,11 +113,11 @@ class ListLinks extends Component {
             </Select>
           </Col>
         </Row>
-         <hr />       
+        <hr />
         <ListShow data={currentList} />
       </div>
-    )
+    );
   }
 }
 
-export default ListLinks
+export default ListLinks;
